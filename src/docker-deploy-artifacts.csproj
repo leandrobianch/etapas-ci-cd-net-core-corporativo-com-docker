@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>docker_deploy_artefacts</RootNamespace>
+    <RootNamespace>docker_deploy_artifacts</RootNamespace>
   </PropertyGroup>
 
 </Project>

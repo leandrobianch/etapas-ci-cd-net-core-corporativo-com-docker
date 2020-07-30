@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace docker_deploy_artefacts
+namespace docker_deploy_artifacts
 {
     public class Program
     {

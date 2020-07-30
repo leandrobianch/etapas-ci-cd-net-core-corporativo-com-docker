@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace docker_deploy_artefacts
+namespace docker_deploy_artifacts
 {
     public class Startup
     {

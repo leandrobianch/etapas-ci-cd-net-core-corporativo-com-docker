@@ -1,6 +1,6 @@
 using System;
 
-namespace docker_deploy_artefacts.Models
+namespace docker_deploy_artifacts.Models
 {
     public class ErrorViewModel
     {
