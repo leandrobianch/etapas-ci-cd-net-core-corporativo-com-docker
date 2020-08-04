@@ -34,3 +34,35 @@ mcr.microsoft.com/dotnet/core/aspnet:3.1 `
 ```ps
 docker ps 
 ```
+**4. 1 Commitando a imagem**
+```ps
+ docker commit `
+ --message 'versao sem build' `
+ docker-deploy-artifacts-na-mao  `
+ leandrobianch/docker-deploy-artifacts-na-mao:1.0.0 
+ ```
+
+**5. Build da imagem**
+```ps
+docker build . --file Dockerfile `
+--tag leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
+```
+**5.1 docker pull da imagem**
+```ps
+docker pull leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
+```
+
+**6. Build da imagem**
+```ps
+docker run `
+-p 8081:8081 `
+--env ASPNETCORE_URLS=http://+:8081 `
+--env ASPNETCORE_ENVIRONMENT=Starging `
+--name docker-deploy-artifacts-na-mao `
+leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
+```
+
+**7. push da imagem**
+```ps
+docker push leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
+```

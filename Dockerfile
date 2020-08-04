@@ -7,7 +7,7 @@ RUN dotnet publish -o ./artifacts --configuration Release
 
 # Imagem que contém o  runtime, que é a versão 'mais enxuto', necessário apenas para executar o program, por exemplo a .dll do publish
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as publish
-WORKDIR /publish
+WORKDIR /aplicacao
 COPY --from=buildComPublish /aplicacao/artifacts ./
 
 # opcional
