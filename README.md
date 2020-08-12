@@ -59,10 +59,18 @@ docker run `
 --env ASPNETCORE_URLS=http://+:8081 `
 --env ASPNETCORE_ENVIRONMENT=Starging `
 --name docker-deploy-artifacts-na-mao `
-leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
+leandrobianch/docker-deploy-artifacts-na-mao:3.0.0
 ```
 
 **7. push da imagem**
 ```ps
 docker push leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
 ```
+
+
+docker run `
+-p 8082:8082 `
+--env ASPNETCORE_URLS=http://+:8082 `
+--env ASPNETCORE_ENVIRONMENT=Starging `
+--name docker-deploy-artifacts-na-mao `
+leandrobianch/docker-deploy-artifacts-na-mao:1.0.0

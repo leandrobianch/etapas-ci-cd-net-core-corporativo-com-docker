@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using docker_deploy_artifacts.Infraestrutura;
+using docker_deploy_artifacts.Repository;
+using docker_deploy_artifacts.Infraestrutura.Repository;
+using Microsoft.EntityFrameworkCore;
+using docker_deploy_artifacts.Infraestrutura.Data;
 
 namespace docker_deploy_artifacts
 {
@@ -23,6 +28,13 @@ namespace docker_deploy_artifacts
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Console.Write($"Connection: {Configuration.GetConnectionString("DefaultConnection")}");
+
+            services.AddDbContext<ContextoBancoDeDados>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+            x => x.MigrationsAssembly(typeof(ContextoBancoDeDados).Assembly.FullName))
+            );
+            services.AddScoped<IClienteRepository, ClienteRepository>();
             services.AddControllersWithViews();
         }
 
