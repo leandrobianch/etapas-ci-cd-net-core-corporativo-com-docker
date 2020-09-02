@@ -1,18 +1,19 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using docker_deploy_artifacts.Infraestrutura.Data;
+using docker_deploy_artifacts.Infraestrutura.Repository;
+using docker_deploy_artifacts.Repository;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using docker_deploy_artifacts.Infraestrutura;
-using docker_deploy_artifacts.Repository;
-using docker_deploy_artifacts.Infraestrutura.Repository;
-using Microsoft.EntityFrameworkCore;
-using docker_deploy_artifacts.Infraestrutura.Data;
+using Microsoft.Extensions.Logging;
+using src.Infraestrutura.Configurations;
 
 namespace docker_deploy_artifacts
 {
@@ -24,21 +25,36 @@ namespace docker_deploy_artifacts
         }
 
         public IConfiguration Configuration { get; }
+        public ILogger Logger { get; private set;}
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            Console.Write($"Connection: {Configuration.GetConnectionString("DefaultConnection")}");
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ContextoBancoDeDados>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-            x => x.MigrationsAssembly(typeof(ContextoBancoDeDados).Assembly.FullName))
-            );
+            options.UseSqlServer(connectionString,
+                    x => x.MigrationsAssembly(typeof(ContextoBancoDeDados).Assembly.FullName)
+                .EnableRetryOnFailure()
+            ));
+
             services.AddScoped<IClienteRepository, ClienteRepository>();
+
+            services.AddHealthChecks().AddCheck<ContextoBancoDeDadosHealthCheck>($"{nameof(ContextoBancoDeDados)}");            
+            services.AddHealthChecksUI(config =>
+            {
+                config.AddHealthCheckEndpoint("SQL Server", ObterHostNameApiHealthCheck());          
+                
+            }).AddInMemoryStorage();
+
             services.AddControllersWithViews();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public string ObterHostNameApiHealthCheck()
+        {
+            return Environment.GetEnvironmentVariable("HostNameHealthCheck") == null ? "/api/health" : $"{Environment.GetEnvironmentVariable("HostNameHealthCheck")}/api/health";
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -52,11 +68,26 @@ namespace docker_deploy_artifacts
                 app.UseHsts();
             }
             
+            app.UseHealthChecks("/api/health", new HealthCheckOptions()
+            {
+                Predicate = _ => true,                
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                ResultStatusCodes =
+                {
+                    [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                    [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                    [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable,
+                }
+            });
+
+            app.UseHealthChecksUI(options =>
+            {
+                options.UIPath = "/hc";
+            });
+
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -64,6 +95,8 @@ namespace docker_deploy_artifacts
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            
         }
     }
 }

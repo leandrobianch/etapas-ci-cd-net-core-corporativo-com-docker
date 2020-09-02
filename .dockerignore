@@ -1,0 +1,15 @@
+artifacts
+bin
+obj
+docs
+README.MD
+ci
+sql
+TestsResults
+.dockerignore
+Dockefile
+Dockerfile.web
+.vscode
+Docker-compose.yaml
+appsettings.json
+**/coverage.opencover.xml

@@ -45,6 +45,7 @@ docker ps
 **5. Build da imagem**
 ```ps
 docker build . --file Dockerfile `
+--build-arg SONAR_TOKEN=cb5af13eea111e264838d86c809b13a71a445259  `
 --tag leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
 ```
 **5.1 docker pull da imagem**
@@ -52,14 +53,14 @@ docker build . --file Dockerfile `
 docker pull leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
 ```
 
-**6. Build da imagem**
+**6. Executando o conteiner**
 ```ps
 docker run `
 -p 8081:8081 `
 --env ASPNETCORE_URLS=http://+:8081 `
 --env ASPNETCORE_ENVIRONMENT=Starging `
 --name docker-deploy-artifacts-na-mao `
-leandrobianch/docker-deploy-artifacts-na-mao:3.0.0
+leandrobianch/etapas-ci-cd-net-core-corporativo-com-docker
 ```
 
 **7. push da imagem**
@@ -68,9 +69,23 @@ docker push leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
 ```
 
 
-docker run `
--p 8082:8082 `
---env ASPNETCORE_URLS=http://+:8082 `
---env ASPNETCORE_ENVIRONMENT=Starging `
---name docker-deploy-artifacts-na-mao `
-leandrobianch/docker-deploy-artifacts-na-mao:1.0.0
+**8. Build do docker compose**
+```ps
+docker-compose --file .\Docker-compose.yaml build
+```
+
+**9. push da imagem**
+```ps
+docker-compose --file .\Docker-compose.yaml up
+```
+
+**10. Build da imagem base com dotnet-sonarscanner**
+```bash
+docker build . --file Dockerfile.image-base-ci \
+--tag leandrobianch/dotnet-sdk-3.1-com-sonar-scanner:1.0.0 \
+--tag leandrobianch/dotnet-sdk-3.1-com-sonar-scanner:latest
+```
+
+sh ./infra-as-a-code/ci-rotinas.sh
+
+sh ./infra-as-a-code/cd-rotinas.sh

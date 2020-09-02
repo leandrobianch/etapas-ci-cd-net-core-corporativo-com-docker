@@ -1,0 +1,11 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as ci
+# instalação das ferramentas do sonar.
+RUN echo 'Inicio Build:' &&  echo $(date +'%d/%m/%Y %H:%m:%S') && \
+apt-get update && \
+apt-get install -y openjdk-11-jdk && \
+        apt-get clean && \
+        rm -rf /tmp/* /var/tmp/* && \
+dotnet tool install --global dotnet-sonarscanner && \
+echo 'Fim Build:' && echo $(date +'%d/%m/%Y %H:%m:%S')
+ENV PATH="$PATH:/root/.dotnet/tools"
+WORKDIR /build
