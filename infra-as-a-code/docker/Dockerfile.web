@@ -1,0 +1,35 @@
+FROM leandrobianch/dotnet-sdk-3.1-com-sonar-scanner:1.0.0 as ci-buildAndTests
+ARG VERSION_NUMBER
+ARG SONAR_PROJECT_KEY
+ARG SONAR_ORGANIZATION_KEY
+ARG SONAR_HOST_URL
+ARG SONAR_TOKEN
+COPY ./src ./src
+COPY ./tests ./tests
+COPY ./etapas-ci-cd-net-core-corporativo-com-docker.sln  .
+COPY ./nuget.config  .
+COPY ./infra-as-a-code/sonar/.sonarignore-rules  .
+COPY ./infra-as-a-code/sonar/sonar-integration.sh .
+WORKDIR /build
+RUN dotnet restore --configfile ./nuget.config
+RUN dotnet sonarscanner begin \
+   /k:"$SONAR_PROJECT_KEY" \
+   /o:"$SONAR_ORGANIZATION_KEY" \
+   /d:sonar.host.url="$SONAR_HOST_URL" \
+   /d:sonar.login="$SONAR_TOKEN" \
+   /d:sonar.cs.opencover.reportsPaths=/build/tests/units/coverage.opencover.xml \
+   /d:sonar.exclusions=$(cat .sonarignore-rules) 
+
+RUN dotnet test ./tests/units/docker-deploy-artifacts-units-tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover 
+RUN dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
+RUN chmod u+x ./sonar-integration.sh && ./sonar-integration.sh
+RUN dotnet publish ./src/docker-deploy-artifacts.csproj --output ./artifacts --configuration Release --no-restore /p:InformationalVersion="${VERSION_NUMBER}"
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as cd-gerarArtefatos
+WORKDIR /aplicacao
+COPY --from=ci-buildAndTests /build/artifacts ./
+EXPOSE 80
+ENV ASPNETCORE_URLS=http://+:80
+ENV ASPNETCORE_ENVIRONMENT=Starging 
+
+ENTRYPOINT ["dotnet", "docker-deploy-artifacts.dll"]

@@ -1,0 +1,14 @@
+{
+    "description": "$DESCRIPTION",    
+    "authorization": {
+      "parameters": {
+        "username": "$USERNAME",
+        "password": "$PASSWORD",        
+        "registry": "https:/$REGISTRY_URL/v1/"
+      },
+      "scheme": "UsernamePassword"
+    },    
+    "name": "$NAME_SERVICE",
+    "type": "dockerregistry",
+    "url": "https://$REGISTRY_URL/v1/"
+  }

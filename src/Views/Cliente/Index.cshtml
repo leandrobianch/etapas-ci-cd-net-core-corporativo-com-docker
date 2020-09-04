@@ -1,0 +1,40 @@
+@using docker_deploy_artifacts.Models;
+@model IEnumerable<Cliente>;
+
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nome)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataNascimento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Idade)
+                </th>
+                <th>
+                    É maior de idade ?
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var cliente in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => cliente.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => cliente.DataNascimento)
+                </td>
+                 <td>
+                    @Html.DisplayFor(modelItem => cliente.FormatadaIdade)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => cliente.FormataSeEhMaiorDeIdade)
+                </td>
+            </tr>
+    }
+    </tbody>
+</table>
