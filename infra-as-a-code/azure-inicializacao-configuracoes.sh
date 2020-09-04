@@ -6,7 +6,7 @@ else
 
     echo "Iniciando as configurações das rotinas de C.I e C.D local"
    
-    . ./infra-as-a-code/configurations-rotina.dev.sh
+    . ./infra-as-a-code/configurations-rotina.dev.secrets
 fi
 
 echo "Definir configurações do projeto"
@@ -45,7 +45,7 @@ az pipelines variable-group create \
 --org $AZURE_DEVOPS_ORGANIZACAO \
 --project $AZURE_DEVOPS_PROJETO \
 --name ${APPLICATION_NAME} \
---variables cat ./infra-as-a-code/azure/variable-group-secrets \
+--variables cat ./infra-as-a-code/azure/variable-group.secrets \
 --authorize true \
 --description "Criação de variaveis para o projeto ${APPLICATION_NAME}" 
                                    

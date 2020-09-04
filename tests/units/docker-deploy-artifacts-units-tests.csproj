@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\docker-deploy-artifacts.csproj" />
+    <ProjectReference Include="..\..\src\docker-deploy-artifacts\docker-deploy-artifacts.csproj" />
   </ItemGroup>
 
 </Project>
