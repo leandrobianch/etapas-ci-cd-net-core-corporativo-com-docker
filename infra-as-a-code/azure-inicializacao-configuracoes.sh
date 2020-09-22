@@ -38,7 +38,11 @@ echo "Criando service connect com docker hub"
 az devops service-endpoint create --service-endpoint-configuration $ARQUIVO_SECURITY
 
 echo "Removendo o arquivo security $ARQUIVO_SECURITY"
-rm $ARQUIVO_SECURITY
+if [ -z $ARQUIVO_SECURITY ] 
+then
+  echo "Removendo o arquivo security $ARQUIVO_SECURITY"
+  rm $ARQUIVO_SECURITY
+fi
 
 echo "Criando grupo de vari connect com docker hub"
 az pipelines variable-group create \

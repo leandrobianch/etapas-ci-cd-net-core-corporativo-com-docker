@@ -2,16 +2,14 @@ version: '3.8'
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest    
-    container_name: docker-deploy-artifacts-na-mao-banco-de-dados-sqlserver    
-    restart: always
-    ports:
-      - "1433:1433"    
+    container_name: docker-deploy-artifacts-na-mao-banco-de-dados-sqlserver        
+    restart: always      
     environment:
-        - SA_PASSWORD=Admin@123
+        - SA_PASSWORD=${PASSWORD_SQL_SERVER}
         - ACCEPT_EULA=Y        
         - TZ=America/Fortaleza #https://medium.com/@leandrobianch/dicas-docker-fuso-hor%C3%A1rio-sqlserver-efebe5a342b5
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "Admin@123", "-Q", "select 1"]
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "${PASSWORD_SQL_SERVER}", "-Q", "select 1"]
       interval: 1s
       retries: 20 
   web:
@@ -25,10 +23,8 @@ services:
         - ASPNETCORE_ENVIRONMENT=Production
         - HostNameHealthCheck=http://localhost:80
         - TZ=America/Fortaleza #https://medium.com/@leandrobianch/dicas-docker-fuso-hor%C3%A1rio-sqlserver-efebe5a342b5        
-        - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=master;ConnectRetryCount=0;User=sa;Password=Admin@123;MultipleActiveResultSets=true
+        - ConnectionStrings__DefaultConnection=${ConnectionStrings}
     depends_on:
       - sqlserver
     links:
         - sqlserver
-volumes:
-     db_data:

@@ -33,7 +33,7 @@ docker images
 # && docker push "$DOCKER_REGISTRY_SERVER_URL/$IMAGE_NAME"
 
 # realiza o push da imagem
-#docker push "$DOCKER_REGISTRY_SERVER_URL/$IMAGE_NAME"
+#docker push "$IMAGE_NAME"
 
 # remover container que não estão em uso.
 docker container prune --force

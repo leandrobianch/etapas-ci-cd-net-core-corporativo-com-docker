@@ -22,7 +22,7 @@ RUN dotnet sonarscanner begin \
 
 RUN dotnet test ./tests/units/docker-deploy-artifacts-units-tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover 
 RUN dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
-RUN chmod u+x ./sonar-integration.sh && ./sonar-integration.sh
+RUN chmod +x ./sonar-integration.sh && ./sonar-integration.sh
 RUN dotnet publish ./src/docker-deploy-artifacts/docker-deploy-artifacts.csproj --output ./artifacts --configuration Release --no-restore /p:InformationalVersion="${VERSION_NUMBER}"
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as cd-gerarArtefatos

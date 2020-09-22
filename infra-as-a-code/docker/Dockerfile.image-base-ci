@@ -4,6 +4,7 @@ RUN echo 'Inicio Build:' &&  echo $(date +'%d/%m/%Y %H:%m:%S') && \
 apt-get update && \
 apt-get install -y openjdk-11-jdk && \
         apt-get clean && \
+        apk add --no-cache bash \
         rm -rf /tmp/* /var/tmp/* && \
 dotnet tool install --global dotnet-sonarscanner && \
 echo 'Fim Build:' && echo $(date +'%d/%m/%Y %H:%m:%S')

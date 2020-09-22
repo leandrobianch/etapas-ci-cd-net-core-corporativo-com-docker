@@ -14,16 +14,17 @@ echo 'Autenticando na azure'
 az login --tenant $AZURE_CLOUD_AD_TENANT_DOMINIO_PRINCIPAL \
 --service-principal --username $AZURE_CLOUD_REGISTRO_APLICATIVO_CLIENT_ID \
 --password $AZURE_CLOUD_REGISTRO_APLICATIVO_TOKEN_CLIENT_ID
+#az group delete --subscription $AZURE_CLOUD_SUBSCRIPTIONS_ID --name $RESOURCE_NAME --yes
 
-#2. https://docs.microsoft.com/pt-br/azure/app-service/quickstart-multi-container
+#2. https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az_group_create
 echo "Criando o recurso: $RESOURCE_NAME"
-az group create --subscription $AZURE_CLOUD_SUBSCRIPTIONS_ID --name $RESOURCE_NAME --location "South Central US"
+az group create --subscription $AZURE_CLOUD_SUBSCRIPTIONS_ID --name $RESOURCE_NAME --location "Central US"
 
-#3. https://docs.microsoft.com/pt-br/azure/app-service/quickstart-multi-container
+#3. https://docs.microsoft.com/en-us/cli/azure/appservice/plan?view=azure-cli-latest#az_appservice_plan_create --F1 --B1
 echo "Criando o plano: $PLAN_NAME"
 az appservice plan create --subscription $AZURE_CLOUD_SUBSCRIPTIONS_ID --name $PLAN_NAME --resource-group $RESOURCE_NAME --sku F1 --is-linux
 
-#4. https://docs.microsoft.com/pt-br/azure/app-service/quickstart-multi-container e https://docs.microsoft.com/en-us/cli/azure/webapp?view=azure-cli-latest#az-webapp-create
+#4. https://docs.microsoft.com/en-us/cli/azure/webapp?view=azure-cli-latest#az-webapp-create
 echo "Criando aplicação : $APPLICATION_NAME"
 az webapp create \
 --subscription $AZURE_CLOUD_SUBSCRIPTIONS_ID \
@@ -43,29 +44,18 @@ az webapp config container set \
 --docker-registry-server-user "${DOCKER_REGISTRY_SERVER_USERNAME}" \
 --docker-registry-server-password "${DOCKER_REGISTRY_SERVER_PASSWORD}"
 
-#6. https://docs.microsoft.com/en-us/cli/azure/webapp/config/connection-string?view=azure-cli-latest#az-webapp-config-connection-string-set
-echo "Definiando a connection string para o conteiner web : $APPLICATION_NAME"
-az webapp config connection-string \
-set \
---connection-string-type SQLServer \
---subscription $AZURE_CLOUD_SUBSCRIPTIONS_ID \
---resource-group $RESOURCE_NAME \
---name $APPLICATION_NAME  \
---settings \
-ConnectionStrings__DefaultConnection="Server=sqlserver;Database=master;ConnectRetryCount=0;User=sa;Password=Admin@123;MultipleActiveResultSets=true"
 
-#7. https://docs.microsoft.com/en-us/cli/azure/webapp/config/appsettings?view=azure-cli-latest
+PASSWORD_SQL_SERVER='xn*45}Nbg(8V.-QWm\CQ'
+#6. https://docs.microsoft.com/en-us/cli/azure/webapp/config/appsettings?view=azure-cli-latest
 echo "Definindo os appsettings para o conteiner web : $APPLICATION_NAME"
 az webapp config appsettings set \
 --subscription $AZURE_CLOUD_SUBSCRIPTIONS_ID \
 --resource-group $RESOURCE_NAME \
 --name $APPLICATION_NAME  \
 --settings \
- ASPNETCORE_URLS=https://+:80 \
- ASPNETCORE_ENVIRONMENT=Production \
- TZ=America/Fortaleza \
-  WEBSITES_PORT=80 \
-  HostNameHealthCheck=https://localhost:80
+ PASSWORD_SQL_SERVER=${PASSWORD_SQL_SERVER} \
+ WEBSITES_PORT=80 \
+ConnectionStrings="Server=sqlserver;Database=master;ConnectRetryCount=0;User=sa;Password=${PASSWORD_SQL_SERVER};MultipleActiveResultSets=true"
 
 
 #Limpar a implantação
@@ -74,4 +64,4 @@ az webapp config appsettings set \
 #az group delete --subscription $AZURE_CLOUD_SUBSCRIPTIONS_ID --name $RESOURCE_NAME --yes
 
 echo "Efetuando logoff azure"
-az logout
+#az logout

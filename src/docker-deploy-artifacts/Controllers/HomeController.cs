@@ -29,6 +29,7 @@ namespace docker_deploy_artifacts.Controllers {
             ViewData["Ambiente"] = _env.EnvironmentName;
             ViewData["MachineName"] = Environment.MachineName;
             ViewData["Versao"] = ObterVersion();
+            ViewData["DefaultConnection"] = _configuration.GetConnectionString("DefaultConnection");
 
             return View ();
         }

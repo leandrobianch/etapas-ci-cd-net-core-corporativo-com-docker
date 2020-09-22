@@ -43,23 +43,25 @@ docker ps
  ```
 
 **5. Build da imagem**
-```ps
-docker build . --file Dockerfile `
---build-arg SONAR_TOKEN=cb5af13eea111e264838d86c809b13a71a445259  `
---tag leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
+```bash
+docker build . --file ./infra-as-a-code/docker/Dockerfile.web \
+--build-arg SONAR_TOKEN=cb5af13eea111e264838d86c809b13a71a445259  \
+--tag leandrobianch/docker-deploy-artifacts-na-mao:$(date +"%d.%m.%Y.%H.%M.%S") \
+--tag leandrobianch/docker-deploy-artifacts-na-mao:latest
 ```
 **5.1 docker pull da imagem**
-```ps
+```bash
 docker pull leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
 ```
 
 **6. Executando o conteiner**
-```ps
-docker run `
--p 8081:8081 `
---env ASPNETCORE_URLS=http://+:8081 `
---env ASPNETCORE_ENVIRONMENT=Starging `
---name docker-deploy-artifacts-na-mao `
+```bash
+docker run  \
+--publish 8081:8081  \
+--env ASPNETCORE_URLS=http://+:8081  \
+--env ASPNETCORE_ENVIRONMENT=Starging  \
+--env HostNameHealthCheck=http://localhost:8081 \
+--name docker-deploy-artifacts-na-mao  \
 leandrobianch/etapas-ci-cd-net-core-corporativo-com-docker
 ```
 
@@ -71,17 +73,17 @@ docker push leandrobianch/docker-deploy-artifacts-na-mao:2.0.0
 
 **8. Build do docker compose**
 ```ps
-docker-compose --file .\Docker-compose.yaml build
+docker-compose --file ./infra-as-a-code/docker/Docker-compose.yml build
 ```
 
-**9. push da imagem**
+**9. Up docker compose **
 ```ps
-docker-compose --file .\Docker-compose.yaml up
+docker-compose --file ./infra-as-a-code/docker/Docker-compose.yml up
 ```
 
 **10. Build da imagem base com dotnet-sonarscanner**
 ```bash
-docker build . --file Dockerfile.image-base-ci \
+docker build . --file ./infra-as-a-code/docker/Dockerfile.image-base-ci \
 --tag leandrobianch/dotnet-sdk-3.1-com-sonar-scanner:1.0.0 \
 --tag leandrobianch/dotnet-sdk-3.1-com-sonar-scanner:latest
 ```
