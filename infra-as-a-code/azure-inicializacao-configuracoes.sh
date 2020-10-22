@@ -27,13 +27,13 @@ az devops project create --name $AZURE_DEVOPS_PROJETO \
 #az devops service-endpoint list --project $AZURE_DEVOPS_PROJETO
 echo "Criando um Service Connection com github"
 export GIT_HUB_SERVICE_CONNECT="GitHub-LeandroBianch"
-SERVICE_CONNECTION_JSON=$(az devops service-endpoint github create --github-url "${GIT_HUB_URL}/etapas-ci-cd-net-core-corporativo-com-docker" \
+SERVICE_CONNECTION_GITHUB_JSON=$(az devops service-endpoint github create --github-url "${GIT_HUB_URL}/etapas-ci-cd-net-core-corporativo-com-docker" \
                                          --name ${GIT_HUB_SERVICE_CONNECT} \
                                          --detect false \
                                          --org $AZURE_DEVOPS_ORGANIZACAO \
                                          --project $AZURE_DEVOPS_PROJETO)
 
-SERVICE_CONNECTION_ID=$(echo $SERVICE_CONNECTION_JSON | ./tools/jq.exe '. | {id : .id, name: .name }' | grep -Po '(?<="id": ").*(?=",)')
+SERVICE_CONNECTION_GITHUB_ID=$(echo $SERVICE_CONNECTION_GITHUB_JSON | ./tools/jq.exe '. | {id : .id, name: .name }' | grep -Po '(?<="id": ").*(?=",)')
 
 #echo $(cat ./tools/teste.json) | ./tools/jq.exe '. | {id : .id}'
 echo "Criando Pipeline Azure Build - CI/CD"
@@ -45,14 +45,14 @@ az pipelines create --name build-ci-cd \
                     --project $AZURE_DEVOPS_PROJETO \
                     --repository "${GIT_HUB_URL}/etapas-ci-cd-net-core-corporativo-com-docker" \
                     --repository-type github \
-                    --service-connection $SERVICE_CONNECTION_ID \
+                    --service-connection $SERVICE_CONNECTION_GITHUB_ID \
                     --skip-first-run true \
                     --yaml-path ./infra-as-a-code/azure/azure-pipelines.yml
 
 
 ARQUIVO_SECURITY="./infra-as-a-code/azure/service-connect.azure-secret.json"
 
-function removerArquivoSecrets {
+removerArquivoSecrets () {
   echo "Tentando excluir"
   if [ -f $ARQUIVO_SECURITY ] 
   then
@@ -73,13 +73,16 @@ sed 's/$NAME_SERVICE/'"${AZURE_DEVOPS_NAME_SERVICE_CONNECT}"'/' | \
 sed 's/$DESCRIPTION/'"${AZURE_DEVOPS_DESCRIPTION_SERVICE_CONNECT}"'/' >> $ARQUIVO_SECURITY
 
 echo "Criando service connect com docker hub"
-az devops service-endpoint create --service-endpoint-configuration $ARQUIVO_SECURITY
+SERVICE_CONNECTION_DOCKERHUB_JSON=$(az devops service-endpoint create --service-endpoint-configuration $ARQUIVO_SECURITY)
 
-# az devops service-endpoint update --id
-#                                   --detect false \
-#                                   --enable-for-all true \
-#                                   --org 
-#                                   --project
+SERVICE_CONNECTION_DOCKER_HUB_ID=$(echo $SERVICE_CONNECTION_DOCKERHUB_JSON | ./tools/jq.exe '. | {id : .id, name: .name }' | grep -Po '(?<="id": ").*(?=",)')
+
+echo "Atribuindo permissão do Docker Hub para todos os pipelines"
+az devops service-endpoint update --id $SERVICE_CONNECTION_DOCKER_HUB_ID \
+                                  --org $AZURE_DEVOPS_ORGANIZACAO \
+                                  --project $AZURE_DEVOPS_PROJETO \
+                                  --detect false \
+                                  --enable-for-all true 
 
 
 removerArquivoSecrets

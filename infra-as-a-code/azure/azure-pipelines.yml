@@ -53,6 +53,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
+    - checkout: none
     - task: Bash@3
       displayName: Publicação e deploy
       inputs:
