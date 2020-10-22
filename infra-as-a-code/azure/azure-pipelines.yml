@@ -50,6 +50,7 @@ stages:
   dependsOn: buildTestes
   jobs:
   - job: deploy_production
+    displayName: "Deploy em Azure Dev Ops Ambiente de Produção"
     pool:
       vmImage: 'ubuntu-latest'
     steps:
