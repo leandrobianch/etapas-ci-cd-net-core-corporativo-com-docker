@@ -58,22 +58,22 @@ namespace docker_deploy_artifacts_units_tests.Domain
             Assert.Equal(resultadoEsperado, _cliente.FormataSeEhMaiorDeIdade);
         }
 
-        [Theory]
-        [InlineData("JIMI HENDRIX", 18, "Sim")]
-        [InlineData("JIMI HENDRIX", 16, "Não")]
-        [InlineData("BBKING", 56, "Sim")]
-        [InlineData("LEANDRO BIANCH DO FUTURO", 17, "Não")]        
-        public void Cliente_QuandoInformarAIdade_DeveRetornarAIdadeFormatadaIdade(string nome, int idade, string resultadoEsperado)
-        {
-            // assert
-            _cliente.Nome = nome;
-            _cliente.DataNascimento = DateTime.Now.AddYears(-idade);
+        // [Theory]
+        // [InlineData("JIMI HENDRIX", 18, "Sim")]
+        // [InlineData("JIMI HENDRIX", 16, "Não")]
+        // [InlineData("BBKING", 56, "Sim")]
+        // [InlineData("LEANDRO BIANCH DO FUTURO", 17, "Não")]        
+        // public void Cliente_QuandoInformarAIdade_DeveRetornarAIdadeFormatadaIdade(string nome, int idade, string resultadoEsperado)
+        // {
+        //     // assert
+        //     _cliente.Nome = nome;
+        //     _cliente.DataNascimento = DateTime.Now.AddYears(-idade);
 
-            // Act
-            _cliente.CalcularIdade();
+        //     // Act
+        //     _cliente.CalcularIdade();
             
-            // Assert
-            Assert.Equal($"{_cliente.Idade} anos", _cliente.FormatadaIdade);
-        }
+        //     // Assert
+        //     Assert.Equal($"{_cliente.Idade} anos", _cliente.FormatadaIdade);
+        // }
     }
 }
