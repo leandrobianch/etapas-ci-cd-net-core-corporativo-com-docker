@@ -4,7 +4,7 @@
       "parameters": {
         "username": "$USERNAME",
         "password": "$PASSWORD",        
-        "registry": "https:/$REGISTRY_URL/v1/"
+        "registry": "https://$REGISTRY_URL/v1/"
       },
       "scheme": "UsernamePassword"
     },    

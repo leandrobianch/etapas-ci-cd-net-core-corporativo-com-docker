@@ -1,0 +1,44 @@
+{
+  "administratorsGroup": null,
+  "authorization": {
+    "parameters": {
+      "accessToken": null
+    },
+    "scheme": "PersonalAccessToken"
+  },
+  "createdBy": {
+    "descriptor": "msa.Yjc3M2I5YzMtNGY5NC03NWVkLTgyMjAtZjk2YTAwMGUyMjY3",
+    "directoryAlias": null,
+    "displayName": "leandrobianch",
+    "id": "a626580f-22e9-492d-8528-54d6bde292e6",
+    "imageUrl": "https://dev.azure.com/leandrobianch/_apis/GraphProfile/MemberAvatars/msa.Yjc3M2I5YzMtNGY5NC03NWVkLTgyMjAtZjk2YTAwMGUyMjY3",
+    "inactive": null,
+    "isAadIdentity": null,
+    "isContainer": null,
+    "isDeletedInOrigin": null,
+    "profileUrl": null,
+    "uniqueName": "leandrobianch@gmail.com",
+    "url": "https://spsprodcus1.vssps.visualstudio.com/A4e6d9644-64b5-4bb8-b774-64a4507d68b7/_apis/Identities/a626580f-22e9-492d-8528-54d6bde292e6"
+  },
+  "data": {},
+  "description": null,
+  "groupScopeId": null,
+  "id": "5b493e64-03e6-463e-8d14-4f76d1d8feb5",
+  "isReady": true,
+  "isShared": false,
+  "name": "b",
+  "operationStatus": null,
+  "owner": "library",
+  "readersGroup": null,
+  "serviceEndpointProjectReferences": [
+    {
+      "name": "b",
+      "projectReference": {
+        "id": "e854d0f1-1c87-4ebc-84ed-d88c00fbb123",
+        "name": null
+      }
+    }
+  ],
+  "type": "github",
+  "url": "https://github.com/leandrobianch/etapas-ci-cd-net-core-corporativo-com-docker"
+}
